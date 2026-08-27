@@ -1,0 +1,15 @@
+# Core runtime (all installed, all used)
+torch>=2.2
+numpy>=1.26
+fastapi>=0.110
+uvicorn[standard]>=0.29
+websockets>=12.0
+pydantic>=2.6
+httpx>=0.27
+pytest>=8.0
+
+# ---- Optional: the pipeline degrades gracefully without these ----
+# scapy>=2.5      # live packet capture; lab uses the built-in simulator
+# bandit>=1.7     # external AST scanner; built-in stdlib scanner is default
+# semgrep>=1.60   # external AST scanner; optional enrichment only
+# shap>=0.45      # reference only; runtime uses gradient-x-input attribution

@@ -1,0 +1,26 @@
+[project]
+name = "aegisforecast"
+version = "0.1.0"
+description = "AegisForecast - AI-based Network Attack Forecasting from Network Traffic Data (SIH / NTRO PS 25217)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Team Entropy" }]
+
+[tool.setuptools]
+packages = [
+    "aegis",
+    "aegis.simulator",
+    "aegis.flows",
+    "aegis.features",
+    "aegis.ml",
+    "aegis.playbooks",
+    "aegis.server",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"

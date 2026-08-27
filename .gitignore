@@ -1,0 +1,38 @@
+# Cache and virtualenvs
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+node_modules/
+frontend/node_modules/
+frontend/dist/
+build/
+.pytest_cache/
+.ipynb_checkpoints/
+.env
+.DS_Store
+.coverage
+*.log
+
+# Large ML model artifacts and heavy training window cache
+aegis/ml/artifacts/wincache/
+*.pkl
+aegis/ml/artifacts/*.pt
+aegis/ml/artifacts/*.pth
+datasets/raw/
+*.pcap
+*.pcapng
+
+# Local SQLite state and recorded sessions
+aegis/data/*.db
+aegis/data/*.db-shm
+aegis/data/*.db-wal
+aegis/data/replays/*.json
+
+# IDE, local tooling and temp files
+.opencode/
+.playwright-mcp/
+*.zip
+aegisforecast/
+build_git_history.py
