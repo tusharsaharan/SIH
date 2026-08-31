@@ -1,0 +1,45 @@
+version: "3.9"
+
+# AegisForecast lab sandbox: isolated vLAN with a deliberately vulnerable
+# app + attacker container. Attack traffic is mirrored to the sensor
+# (aegis agent) via the dedicated "monitor" network. Nothing leaves the host.
+
+networks:
+  vlan10:          # "production" segment
+    driver: bridge
+    internal: true
+  monitor:         # SPAN/TAP equivalent - sensor-only visibility
+    driver: bridge
+    internal: true
+
+services:
+  vulnerable-app:
+    build: ./vulnerable-app
+    networks: [vlan10]
+    ports: ["127.0.0.1:8080:8080"]
+    environment:
+      - DB_URL=sqlite:////tmp/app.db
+    labels:
+      aegis.role: "target"
+
+  attacker:
+    build: ./attacker
+    networks: [vlan10]
+    depends_on: [vulnerable-app]
+    environment:
+      - TARGET=http://vulnerable-app:8080
+    labels:
+      aegis.role: "attacker"
+
+  sensor:
+    build:
+      # NOTE: lab reference only — build context is the repo root, Dockerfile
+      # lives at sandbox/Dockerfile.sensor (renamed from .stub on bring-up)
+      context: ..
+      dockerfile: sandbox/Dockerfile.sensor
+    networks: [vlan10, monitor]
+    depends_on: [vulnerable-app]
+    cap_add: [NET_ADMIN, NET_RAW]     # required for packet capture / eBPF
+    labels:
+      aegis.role: "sensor"
+    # in full deployment: mount /sys/fs/bpf, attach aegis_flow_kern.o
