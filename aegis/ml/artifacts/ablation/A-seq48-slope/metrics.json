@@ -1,0 +1,14 @@
+{
+  "val_auc": 0.9132,
+  "val_stage_acc": 0.7125,
+  "val_horizon_mae_min": 6.36,
+  "n_train": 3170,
+  "n_val": 793,
+  "seq_len": 48,
+  "feature_dim": 22,
+  "use_slope": true,
+  "pos_weight": 1.09,
+  "epochs": 8,
+  "train_seconds": 39.8,
+  "checkpoint_format": 2
+}

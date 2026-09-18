@@ -1,0 +1,36 @@
+{
+  "winner": "A-seq48-slope",
+  "results": [
+    {
+      "config": "A-seq48-slope",
+      "seq_len": 48,
+      "use_slope": true,
+      "val_auc": 0.9132,
+      "stage_acc": 0.7125,
+      "horizon_mae": 6.36,
+      "fp_alerts_per_hour": 0.0,
+      "attack_coverage_pct": 100.0,
+      "lead_mean_min": 4.59,
+      "lead_median_min": 4.89,
+      "lead_p10_min": 3.17,
+      "train_seconds": 51.3,
+      "params": null
+    },
+    {
+      "config": "D-seq24-base",
+      "seq_len": 24,
+      "use_slope": false,
+      "val_auc": 0.8655,
+      "stage_acc": 0.6441,
+      "horizon_mae": 7.18,
+      "fp_alerts_per_hour": 0.0,
+      "attack_coverage_pct": 0.0,
+      "lead_mean_min": 0.0,
+      "lead_median_min": 0.0,
+      "lead_p10_min": 0.0,
+      "train_seconds": 26.0,
+      "params": null
+    }
+  ],
+  "gates": "FP<=1/hr AND coverage>=80%"
+}
