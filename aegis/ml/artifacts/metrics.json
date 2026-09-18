@@ -1,0 +1,15 @@
+{
+  "val_auc": 0.9613,
+  "val_stage_acc": 0.8221,
+  "val_horizon_mae_min": 6.48,
+  "n_train": 5889,
+  "n_val": 1473,
+  "seq_len": 48,
+  "feature_dim": 22,
+  "use_slope": true,
+  "pos_weight": 2.61,
+  "epochs": 10,
+  "train_seconds": 638.4,
+  "checkpoint_format": 2,
+  "model_name": "bilstm"
+}
