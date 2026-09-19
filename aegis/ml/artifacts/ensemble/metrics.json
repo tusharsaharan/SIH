@@ -1,0 +1,12 @@
+{
+  "val_auc": 0.9881,
+  "val_stage_acc": 0.8766,
+  "val_auc_bilstm": 0.9659,
+  "val_auc_transformer": 0.989,
+  "weight_bilstm": 0.4941,
+  "n_val": 1491,
+  "seq_len": 48,
+  "feature_dim": 22,
+  "eval_seconds": 14.0,
+  "model_name": "ensemble"
+}
