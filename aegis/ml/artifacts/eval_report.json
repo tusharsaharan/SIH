@@ -1,0 +1,68 @@
+{
+  "false_positive": {
+    "n_sessions": 6,
+    "monitored_windows": 2976,
+    "monitored_hours": 4.13,
+    "alerts": 5,
+    "alerts_per_hour": 1.21,
+    "per_session": [
+      0,
+      3,
+      1,
+      0,
+      1,
+      0
+    ]
+  },
+  "lead_time": {
+    "n_scenarios": 12,
+    "detected": 12,
+    "coverage_pct": 100.0,
+    "lead_mean_min": 21.13,
+    "lead_median_min": 19.99,
+    "lead_p10_min": 15.07,
+    "lead_p90_min": 27.73,
+    "leads": [
+      14.66,
+      17.85,
+      20.35,
+      15.75,
+      24.63,
+      26.37,
+      15.0,
+      17.38,
+      19.62,
+      29.29,
+      24.74,
+      27.88
+    ]
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.65,
+      "fp_alerts_per_hour": 0.726,
+      "attack_coverage_pct": 100.0,
+      "lead_median_min": 19.21
+    },
+    {
+      "threshold": 0.7,
+      "fp_alerts_per_hour": 0.0,
+      "attack_coverage_pct": 100.0,
+      "lead_median_min": 19.21
+    },
+    {
+      "threshold": 0.72,
+      "fp_alerts_per_hour": 0.0,
+      "attack_coverage_pct": 100.0,
+      "lead_median_min": 19.21
+    },
+    {
+      "threshold": 0.75,
+      "fp_alerts_per_hour": 0.0,
+      "attack_coverage_pct": 100.0,
+      "lead_median_min": 19.21
+    }
+  ],
+  "calibrated_threshold": 0.72,
+  "eval_seconds": 386.0
+}
