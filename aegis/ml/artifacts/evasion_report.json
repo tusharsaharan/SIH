@@ -1,0 +1,22 @@
+[
+  {
+    "family": "slow_scan",
+    "detonation_min": 17.0,
+    "recon_min": 14.0,
+    "first_alert_min": 4.0,
+    "lead_min": 13.0,
+    "n_alerts": 46,
+    "max_prob": 0.996,
+    "verdict": "CAUGHT"
+  },
+  {
+    "family": "mimicry",
+    "detonation_min": 11.0,
+    "recon_min": 8.0,
+    "first_alert_min": 4.0,
+    "lead_min": 7.0,
+    "n_alerts": 28,
+    "max_prob": 0.996,
+    "verdict": "CAUGHT"
+  }
+]
