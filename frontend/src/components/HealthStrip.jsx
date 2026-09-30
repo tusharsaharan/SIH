@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Dot } from './ui.jsx'
 
-/** Thin system-status strip: backend, WS link, inference latency, model, threshold. */
+/** Slim connection vitals: backend + stream + latency only.
+ *  Model/threshold detail lives in the Models tab — no duplication. */
 export default function HealthStrip({ connected, latest, health }) {
   const [rtt, setRtt] = useState(null)
 
@@ -22,21 +23,19 @@ export default function HealthStrip({ connected, latest, health }) {
   const emitMs = latest?.emitMs ?? null
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-3">
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 rounded-xl border border-line bg-ivory-soft shadow-soft px-4 py-1.5 text-[10px] text-ink-soft">
+    <div className="max-w-7xl mx-auto px-6 pt-4">
+      <div className="flex flex-wrap items-center rounded-md border border-[#E2DED4] bg-[#FFFFFF] px-4 text-[10px] font-light text-[#57534E]" style={{ gap: 20, paddingTop: 6, paddingBottom: 6 }}>
         <span className="flex items-center gap-1.5">
-          <Dot tone={health ? 'lime' : 'muted'} pulse={!!health} />
+          <Dot tone={health ? 'primary' : 'muted'} pulse={!!health} />
           backend {health ? 'online' : 'offline'}
         </span>
         <span className="flex items-center gap-1.5">
-          <Dot tone={connected ? 'lime' : 'muted'} pulse={connected} />
+          <Dot tone={connected ? 'primary' : 'muted'} pulse={connected} />
           stream {connected ? 'live' : 'reconnecting'}
         </span>
-        <span>api rtt <b className="text-ink tabular-nums">{rtt != null ? `${rtt} ms` : '—'}</b></span>
-        <span>infer <b className="text-ink tabular-nums">{emitMs != null ? `${emitMs} ms/win` : '—'}</b></span>
-        <span>model <b className="text-ink">BiLSTM seq48+slope</b></span>
-        <span>threshold <b className="text-ink tabular-nums">{health ? `${Math.round(health.threshold * 100)}%` : '—'}</b></span>
-        <span className="ml-auto">AegisForecast v0.3 · zero-upload telemetry</span>
+        <span>api rtt <b className="text-[#1C1917] tabular-nums font-light">{rtt != null ? `${rtt} ms` : '—'}</b></span>
+        <span>infer <b className="text-[#1C1917] tabular-nums font-light">{emitMs != null ? `${emitMs} ms/win` : '—'}</b></span>
+        <span className="ml-auto">zero-upload telemetry</span>
       </div>
     </div>
   )

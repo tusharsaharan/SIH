@@ -2,23 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light engaging SOC theme — warm paper canvas, indigo focus, Primer/Carbon-style
+   functional roles: indigo = interactive/forecast, red = critical,
+   amber = elevated/challenger, emerald = contained/healthy.
+   Type voice stays Fractul-first (licensed files override the downloaded fallback). */
+@font-face {
+  font-family: 'Fractul';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: local('Fractul Light'), local('Fractul-Light');
+}
+@font-face {
+  font-family: 'Fractul';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Fractul Regular'), local('Fractul-Regular');
+}
+
 :root { color-scheme: light; }
 
 body {
-  font-family: 'JetBrains Mono', Consolas, monospace;
-  background: #FFFEF7;
-  color: #3F3A2E;
+  font-family: 'Fractul', 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 24px;
+  background: #F4F3EF;
+  color: #1C1917;
 }
 
-::selection { background: #DBEAFE; }
+::selection { background: #0F766E; color: #FFFFFF; }
+
+/* type scale (QF spec) */
+.qf-display { font-size: 100px; line-height: 120px; font-weight: 400; }
+.qf-h-lg { font-size: 67px; line-height: 120px; font-weight: 400; }
+.qf-h-md { font-size: 45px; line-height: 54px; font-weight: 400; }
+.qf-h-sm { font-size: 30px; line-height: 36px; font-weight: 400; }
+.qf-body-lg { font-size: 20px; line-height: 30px; font-weight: 300; }
+.qf-body-md { font-size: 16px; line-height: 24px; font-weight: 300; }
+.qf-body-sm { font-size: 14px; line-height: 20px; font-weight: 300; }
+.qf-label-lg { font-size: 18px; line-height: 24px; font-weight: 400; }
+.qf-label-md { font-size: 16px; line-height: 20px; font-weight: 300; }
+.qf-label-sm { font-size: 12px; line-height: 16px; font-weight: 300; letter-spacing: 0.04em; }
+.qf-nav { font-size: 16px; line-height: 20px; font-weight: 300; }
+.qf-section-title { font-size: 12px; line-height: 16px; font-weight: 300; letter-spacing: 0.04em; text-transform: uppercase; color: #57534E; }
+
+/* buttons — compact 44px dashboard variant + 88px hero variant per spec */
+.qf-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 44px; padding: 0 22px; border-radius: 4px;
+  font-size: 16px; line-height: 20px; font-weight: 300;
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+}
+.qf-btn-primary { background: #0F766E; color: #FFFFFF; border-color: #0F766E; }
+.qf-btn-primary:hover { background: #115E59; border-color: #115E59; }
+.qf-btn-secondary { background: transparent; color: #1C1917; border-color: #E2DED4; }
+.qf-btn-secondary:hover { border-color: #0F766E; color: #0F766E; }
+.qf-btn-error { background: transparent; color: #B42318; border-color: #B42318; }
+.qf-btn-error:hover { background: #B42318; color: #FFFFFF; }
+.qf-btn-tertiary { background: transparent; border: none; padding: 0; height: auto; color: #1C1917; }
+.qf-btn-hero { height: 88px; padding: 36px 44px; }
+.qf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* cards / inputs / chips */
+.qf-card { background: #FFFFFF; color: #1C1917; border: 1px solid #E2DED4; border-radius: 8px; padding: 16px; }
+.qf-panel { background: #FFFFFF; color: #1C1917; border: 1px solid #E2DED4; border-radius: 8px; }
+.qf-input { background: #FFFFFF; color: #1C1917; border: 1px solid #E2DED4; border-radius: 4px; padding: 16px; }
+.qf-chip { background: #F4F3EF; color: #1C1917; border: 1px solid #E2DED4; border-radius: 9999px; padding: 8px 12px; font-size: 12px; line-height: 16px; }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.35); }
-  70% { box-shadow: 0 0 0 12px rgba(249, 115, 22, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0.35); }
+  70% { box-shadow: 0 0 0 12px rgba(180, 35, 24, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0); }
 }
 .alert-pulse { animation: pulse-ring 1.2s infinite; }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #D8CFB6; border-radius: 4px; }
-::-webkit-scrollbar-track { background: #F1EAD6; }
+::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 4px; }
+::-webkit-scrollbar-track { background: #F4F3EF; }

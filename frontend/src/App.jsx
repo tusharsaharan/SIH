@@ -1,5 +1,6 @@
 import Header from './components/Header.jsx'
-import ThreatGauge from './components/ThreatGauge.jsx'
+import SituationStrip from './components/SituationStrip.jsx'
+import DetailTabs from './components/DetailTabs.jsx'
 import ForecastChart from './components/ForecastChart.jsx'
 import KillChain from './components/KillChain.jsx'
 import ShapPanel from './components/ShapPanel.jsx'
@@ -53,7 +54,7 @@ export default function App() {
   const toastId = useRef(0)
   const prevCounts = useRef({ alerts: 0, containment: 0 })
 
-  const pushToast = (title, body, tone = 'blue') => {
+  const pushToast = (title, body, tone = 'secondary') => {
     const id = ++toastId.current
     setToasts((t) => [...t, { id, title, body, tone }].slice(-4))
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 6000)
@@ -63,13 +64,13 @@ export default function App() {
   useEffect(() => {
     if (alerts.length > prevCounts.current.alerts && prevCounts.current.alerts > 0) {
       const a = alerts[0]
-      pushToast('attack forecast', `${a.host} · ${(a.attackProb * 100).toFixed(0)}% · ${a.mitre}`, 'orange')
+      pushToast('attack forecast', `${a.host} · ${(a.attackProb * 100).toFixed(0)}% · ${a.mitre}`, 'error')
     }
     prevCounts.current.alerts = alerts.length
   }, [alerts.length])
   useEffect(() => {
     if (containment.length > prevCounts.current.containment && prevCounts.current.containment > 0) {
-      pushToast('containment dispatched', containment[0].rule || 'firewall rule applied', 'lime')
+      pushToast('containment dispatched', containment[0].rule || 'firewall rule applied', 'primary')
     }
     prevCounts.current.containment = containment.length
   }, [containment.length])
@@ -121,74 +122,75 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-ivory text-ink">
+    <div className="min-h-screen bg-[#F4F3EF] text-[#1C1917] font-fractul">
       <Header connected={connected} running={running} paused={paused} latest={latest}
         onLaunch={() => setShowLauncher(true)} onStop={onStop} onTogglePause={onTogglePause}
         kind={kind} setKind={setKind} kinds={KINDS} sessionId={sessionId} />
       <HealthStrip connected={connected} latest={latest} health={health} />
 
-      <main className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <section className="lg:col-span-3 flex flex-col gap-4">
-          <ThreatGauge prob={latest?.prob ?? 0} threshold={threshold} />
-          <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-4">
-            <div className="text-xs tracking-widest text-ink-soft uppercase mb-2">Forecast</div>
-            <Row k="Top host" v={latest?.host ?? '—'} />
-            <Row k="Current stage" v={latest ? `${latest.stageName}` : '—'} />
-            <Row k="MITRE tactic" v={latest?.mitre ?? '—'} />
-            <Row k="Lead time" v={latest?.horizon ? `${latest.horizon} min` : '—'} />
-            <Row k="Windows seen" v={telemetry.length} />
-          </div>
-          {sessionId && (
-            <a href={reportUrl(sessionId)} target="_blank" rel="noreferrer"
-              className="rounded-2xl border border-blue-200 bg-blue-50 shadow-soft px-4 py-3 text-center text-xs font-semibold text-blue-700 hover:bg-blue-100">
-              ⬇ Download Incident Report ({sessionId})
-            </a>
-          )}
-        </section>
+      <main className="max-w-7xl mx-auto flex flex-col" style={{ padding: 24, gap: 24 }}>
+        {/* command view — the only thing visible above the fold */}
+        <SituationStrip prob={latest?.prob ?? 0} threshold={threshold} latest={latest} windows={telemetry.length} />
 
-        <section className="lg:col-span-6 flex flex-col gap-4">
-          {multi && <TopologyMap topology={topology} onSelectHost={setSelectedHost} selectedHost={selectedHost} />}
-          <ForecastChart telemetry={telemetry} threshold={threshold} detonationMin={detonationMin} markers={containment} />
-          <KillChain stage={latest?.stage ?? 0} />
-          {sessionId && <ABPanel sessionId={sessionId} />}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12" style={{ gap: 16 }}>
+          <section className="lg:col-span-8 flex flex-col" style={{ gap: 16 }}>
+            {multi && <TopologyMap topology={topology} onSelectHost={setSelectedHost} selectedHost={selectedHost} />}
+            <ForecastChart telemetry={telemetry} threshold={threshold} detonationMin={detonationMin} markers={containment} />
+            <KillChain stage={latest?.stage ?? 0} />
+          </section>
+
+          {/* ops rail — live action only: alerts + response */}
+          <section className="lg:col-span-4 flex flex-col" style={{ gap: 16 }}>
+            <AlertFeed alerts={alerts} containment={containment} onSelectAlert={setSelectedAlert} />
+            <SoarPanel incidents={incidents} onRespond={onRespond}
+              autoSoar={autoSoar} onToggleAuto={onToggleAutoSoar} />
+          </section>
+        </div>
+
+        {/* secondary analysis — one tab at a time, out of the command view */}
+        <DetailTabs
+          counts={{ respond: campaigns.length || '', models: '' }}
+          renderExplain={() => (<>
             <ShapPanel shap={latest?.shap} />
             <ShapRadar history={telemetry} />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          </>)}
+          renderRespond={() => (<>
+            <CampaignPanel campaigns={campaigns} />
+            <PlaybookPanel playbook={playbook} onRefresh={pbRefresh} loading={pbLoading} />
+            <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-4 flex flex-col" style={{ maxHeight: 384 }}>
+              <div className="qf-section-title mb-2">Reports & history</div>
+              {sessionId ? (
+                <a href={reportUrl(sessionId)} target="_blank" rel="noreferrer"
+                  className="qf-btn qf-btn-secondary w-full">
+                  ⬇ Incident Report ({sessionId})
+                </a>
+              ) : (
+                <div className="text-[11px] font-light text-[#57534E]">no live session — launch one to generate a report</div>
+              )}
+              <div className="mt-3 flex-1 overflow-y-auto flex flex-col gap-1.5">
+                {history.length === 0 && (
+                  <div className="text-[11px] font-light text-[#57534E]">no past sessions yet</div>
+                )}
+                {history.map((s) => (
+                  <button key={s.session_id} onClick={() => setReportSid(s.session_id)}
+                    className="rounded-sm border border-[#E2DED4] bg-[#F4F3EF] px-3 py-1.5 text-left text-[10px] font-light text-[#57534E] hover:text-[#1C1917] hover:border-[#0F766E]">
+                    {s.session_id} · {s.kind} · {s.n_alerts} alerts →
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>)}
+          renderModels={() => (<>
+            {sessionId && <ABPanel sessionId={sessionId} />}
             <ModelChips />
             <EvasionPanel />
-          </div>
-        </section>
-
-        <section className="lg:col-span-3 flex flex-col gap-4">
-          <SoarPanel incidents={incidents} onRespond={onRespond}
-            autoSoar={autoSoar} onToggleAuto={onToggleAutoSoar} />
-          <CampaignPanel campaigns={campaigns} />
-          <PlaybookPanel playbook={playbook} onRefresh={pbRefresh} loading={pbLoading} />
-          <AlertFeed alerts={alerts} containment={containment} onSelectAlert={setSelectedAlert} />
-        </section>
+          </>)}
+        />
       </main>
 
-      {history.length > 0 && (
-        <footer className="max-w-7xl mx-auto px-4 pb-6">
-          <div className="text-[10px] tracking-widest text-ink-faint uppercase mb-2">
-            Session History ({history.length})
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {history.map((s) => (
-              <button key={s.session_id} onClick={() => setReportSid(s.session_id)}
-                className="shrink-0 rounded-lg border border-line bg-ivory-soft shadow-soft px-3 py-1.5 text-[10px] text-ink-soft hover:border-blue-300 hover:text-blue-700">
-                {s.session_id} · {s.kind} · {s.n_alerts} alerts →
-              </button>
-            ))}
-          </div>
-        </footer>
-      )}
-
-      <footer className="max-w-7xl mx-auto px-4 pb-6 text-[10px] text-ink-faint flex justify-between">
-        <span>AegisForecast v0.3 — SIH PS 25217 · zero-upload eBPF telemetry · Bi-LSTM+Attention · SOAR</span>
-        <span>{telemetry.length ? `${telemetry.length} windows ingested` : 'idle'}</span>
+      <footer className="max-w-7xl mx-auto px-6 pb-6 qf-body-sm text-[#57534E] flex justify-between">
+        <span>AegisForecast v0.3 · zero-upload telemetry · Bi-LSTM+Attention · SOAR</span>
+        <span>{telemetry.length ? `${telemetry.length} windows` : 'idle'}</span>
       </footer>
 
       <Toasts toasts={toasts} onDismiss={(id) => setToasts((t) => t.filter((x) => x.id !== id))} />
@@ -206,15 +208,6 @@ export default function App() {
       {showLauncher && (
         <LaunchModal kinds={KINDS} onStart={onLaunch} onClose={() => setShowLauncher(false)} />
       )}
-    </div>
-  )
-}
-
-function Row({ k, v }) {
-  return (
-    <div className="flex items-center justify-between py-1 border-b border-line last:border-0">
-      <span className="text-[11px] text-ink-soft">{k}</span>
-      <span className="text-[11px] text-ink">{v}</span>
     </div>
   )
 }

@@ -1,51 +1,48 @@
 /** SOAR console: incident state machine + analyst response buttons. */
 const NEXT_ACTIONS = {
-  detected: [['triage', 'Triage', 'blue'], ['isolate', 'Isolate Host', 'orange']],
-  triaged: [['isolate', 'Isolate Host', 'orange']],
-  contained: [['verify', 'Verify Clean', 'blue'], ['close', 'Close', 'muted']],
+  detected: [['triage', 'Triage', 'secondary'], ['isolate', 'Isolate Host', 'error']],
+  triaged: [['isolate', 'Isolate Host', 'error']],
+  contained: [['verify', 'Verify Clean', 'secondary'], ['close', 'Close', 'muted']],
   verified: [['close', 'Close Incident', 'muted']],
   closed: [],
 }
 
 const BTN = {
-  orange: 'border-orange-300 bg-orange-50 text-orange-700 hover:bg-orange-100',
-  blue: 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100',
-  muted: 'border-line bg-ivory-deep/60 text-ink-soft hover:bg-ivory-deep',
+  error: 'qf-btn qf-btn-error !h-8 !px-2 !text-[10px]',
+  secondary: 'qf-btn qf-btn-secondary !h-8 !px-2 !text-[10px]',
+  muted: 'rounded-sm border border-[#E2DED4] px-2 py-1 text-[10px] font-light text-[#57534E] hover:text-[#1C1917]',
 }
 
 export default function SoarPanel({ incidents, onRespond, autoSoar, onToggleAuto }) {
   const list = Object.entries(incidents || {})
 
   return (
-    <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-4 h-72 flex flex-col">
+    <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-4 flex flex-col" style={{ minHeight: 280 }}>
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs tracking-widest text-ink-soft uppercase">
+        <span className="qf-section-title">
           SOAR Response Console
         </span>
         <button onClick={onToggleAuto}
-          className={`rounded-full px-2.5 py-1 text-[10px] font-semibold border
-            ${autoSoar
-              ? 'border-lime-500 bg-lime-50 text-lime-700'
-              : 'border-line bg-ivory-deep/60 text-ink-faint'}`}>
+          className="qf-chip">
           AUTO-SOAR {autoSoar ? 'ON' : 'OFF'}
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {!list.length ? (
-          <div className="grid place-items-center h-full text-ink-faint text-xs">
+          <div className="grid place-items-center h-full text-[#57534E] text-xs font-light">
             no open incidents
           </div>
         ) : list.map(([host, inc]) => (
-          <div key={host} className="rounded-lg border border-line bg-ivory px-3 py-2 shadow-soft">
+          <div key={host} className="rounded-sm border border-[#E2DED4] bg-[#F4F3EF] px-3 py-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-ink">
+              <span className="text-[11px] font-light text-[#1C1917]">
                 {host}
               </span>
-              <span className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded
-                ${inc.state === 'closed' ? 'bg-lime-100 text-lime-700'
-                  : inc.state === 'detected' ? 'bg-orange-100 text-orange-700'
-                  : 'bg-blue-100 text-blue-700'}`}>
+              <span className={`text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm border
+                ${inc.state === 'closed' ? 'text-[#57534E] border-[#E2DED4]'
+                  : inc.state === 'detected' ? 'text-[#B42318] border-[#B42318]'
+                  : 'text-[#1C1917] border-[#0F766E]'}`}>
                 {inc.state}
               </span>
             </div>
@@ -53,12 +50,12 @@ export default function SoarPanel({ incidents, onRespond, autoSoar, onToggleAuto
               {(NEXT_ACTIONS[inc.state] || []).map(([action, label, color]) => (
                 <button key={action}
                   onClick={() => onRespond(host, action)}
-                  className={`rounded-md border px-2 py-1 text-[10px] font-semibold ${BTN[color]}`}>
+                  className={BTN[color]}>
                   {label}
                 </button>
               ))}
               {!(NEXT_ACTIONS[inc.state] || []).length && (
-                <span className="text-[10px] text-ink-faint">no further actions</span>
+                <span className="text-[10px] font-light text-[#57534E]">no further actions</span>
               )}
             </div>
           </div>

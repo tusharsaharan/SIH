@@ -5,8 +5,8 @@ import {
 } from 'recharts'
 
 /**
- * Model A/B replay: same recorded session through current model (A, cyan)
- * vs a selectable challenger (B, violet): transformer, ensemble, baseline.
+ * Model A/B replay: same recorded session through current model (A)
+ * vs a selectable challenger (B): transformer, ensemble, baseline.
  * Shows which model alerts earlier.
  */
 export default function ABPanel({ sessionId }) {
@@ -41,14 +41,14 @@ export default function ABPanel({ sessionId }) {
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-4">
+    <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs tracking-widest text-ink-soft uppercase">
+        <span className="qf-section-title">
           Model A/B Replay
         </span>
         <div className="flex items-center gap-1.5">
           <select value={challenger} onChange={(e) => setChallenger(e.target.value)}
-            className="rounded-md border border-line bg-ivory px-1.5 py-1 text-[10px] text-ink-soft">
+            className="qf-input !p-1.5 !text-[10px]">
             {['ensemble', 'transformer', 'baseline'].map((m) => {
               const info = models.find((x) => x.name === m)
               const ok = info?.available !== false
@@ -58,36 +58,35 @@ export default function ABPanel({ sessionId }) {
             })}
           </select>
           <button onClick={run} disabled={loading || !sessionId}
-            className="rounded-lg border border-blue-300 bg-blue-50 px-2.5 py-1 text-[10px] text-blue-700
-                       hover:bg-blue-100 disabled:opacity-40">
+            className="qf-btn qf-btn-secondary !h-8 !px-3 !text-[10px]">
             {loading ? 'replaying…' : '▶ Compare'}
           </button>
         </div>
       </div>
 
-      {data?.error && <div className="text-xs text-orange-600">replay failed</div>}
+      {data?.error && <div className="text-xs font-light text-[#B42318]">replay failed</div>}
 
       {data && !data.error && (
         <>
-          <div className="flex gap-4 text-[10px] text-ink-soft mb-2">
-            <span>A first alert: <b className="text-blue-700">
+          <div className="flex gap-4 text-[10px] font-light text-[#57534E] mb-2">
+            <span>A first alert: <b className="text-[#1C1917] font-light">
               {data.firstAlertA != null ? `t+${data.firstAlertA}m` : '—'}</b></span>
-            <span>B first alert: <b className="text-orange-600">
+            <span>B first alert: <b className="text-[#B45309] font-light">
               {data.firstAlertB != null ? `t+${data.firstAlertB}m` : '—'}</b></span>
-            <span>detonation: <b className="text-orange-700">t+{data.detonationMin}m</b></span>
+            <span>detonation: <b className="text-[#B42318] font-light">t+{data.detonationMin}m</b></span>
           </div>
           <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={merged} margin={{ top: 4, right: 8, bottom: 4, left: -18 }}>
-                <CartesianGrid stroke="#E7DFC8" strokeDasharray="3 3" />
-                <XAxis dataKey="minute" tick={{ fill: '#8A8272', fontSize: 9 }} unit="m" />
-                <YAxis domain={[0, 1]} tick={{ fill: '#8A8272', fontSize: 9 }} />
-                <Tooltip contentStyle={{ background: '#FFFEF7', border: '1px solid #E7DFC8', borderRadius: 8, fontSize: 11, color: '#3F3A2E' }} />
-                <Legend wrapperStyle={{ fontSize: 10 }} />
-                <ReferenceLine y={0.72} stroke="#2563EB" strokeDasharray="6 3" />
-                <Line type="monotone" dataKey="modelA" name="A: current BiLSTM" stroke="#2563EB"
+                <CartesianGrid stroke="#E2DED4" strokeDasharray="3 3" />
+                <XAxis dataKey="minute" tick={{ fill: '#57534E', fontSize: 9 }} unit="m" />
+                <YAxis domain={[0, 1]} tick={{ fill: '#57534E', fontSize: 9 }} />
+                <Tooltip contentStyle={{ background: '#FFFFFF', border: '1px solid #E2DED4', borderRadius: 4, fontSize: 11, color: '#1C1917' }} />
+                <Legend wrapperStyle={{ fontSize: 10, color: '#57534E' }} />
+                <ReferenceLine y={0.72} stroke="#1C1917" strokeDasharray="6 3" />
+                <Line type="monotone" dataKey="modelA" name="A: current BiLSTM" stroke="#0F766E"
                   strokeWidth={2} dot={false} isAnimationActive={false} />
-                <Line type="monotone" dataKey="modelB" name={`B: ${data.modelB || 'challenger'}`} stroke="#ea580c"
+                <Line type="monotone" dataKey="modelB" name={`B: ${data.modelB || 'challenger'}`} stroke="#D97706"
                   strokeWidth={1.5} strokeDasharray="4 2" dot={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>

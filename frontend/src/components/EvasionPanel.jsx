@@ -13,9 +13,9 @@ export default function EvasionPanel() {
 
   return (
     <Card>
-      <SectionTitle right={<Badge tone="blue">red-team</Badge>}>Evasion Analysis</SectionTitle>
+      <SectionTitle right={<Badge tone="secondary">red-team</Badge>}>Evasion Analysis</SectionTitle>
       {!data ? (
-        <div className="text-[11px] text-ink-faint">loading analysis…</div>
+        <div className="text-[11px] font-light text-[#57534E]">loading analysis…</div>
       ) : fams.length === 0 ? (
         <EmptyState glyph="◍">analysis unavailable</EmptyState>
       ) : (
@@ -23,13 +23,13 @@ export default function EvasionPanel() {
           {fams.map(([fam, b]) => {
             const caught = /CAUGHT/.test(b.measuredOutcome || '')
             return (
-              <div key={fam} className="rounded-xl border border-line bg-ivory p-3">
+              <div key={fam} className="rounded-sm border border-[#E2DED4] bg-[#F4F3EF] p-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold font-mono text-ink">{fam}</span>
-                  <Badge tone={caught ? 'lime' : 'orange'}>{caught ? 'caught' : 'review'}</Badge>
+                  <span className="text-[11px] font-light text-[#1C1917]">{fam}</span>
+                  <Badge tone={caught ? 'ok' : 'error'}>{caught ? 'caught' : 'review'}</Badge>
                 </div>
-                <div className="mt-1.5 text-[10px] leading-relaxed text-ink-soft">{b.measuredOutcome}</div>
-                {b.whyCaught && <div className="mt-1 text-[10px] leading-relaxed text-ink-faint">{b.whyCaught}</div>}
+                <div className="mt-1.5 text-[10px] font-light leading-relaxed text-[#57534E]">{b.measuredOutcome}</div>
+                {b.whyCaught && <div className="mt-1 text-[10px] font-light leading-relaxed text-[#57534E]">{b.whyCaught}</div>}
               </div>
             )
           })}

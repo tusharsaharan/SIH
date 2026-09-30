@@ -14,11 +14,11 @@ const ROLE_LABEL = {
   'workstation': 'WS1 · client',
 }
 
-function riskColor(risk) {
-  if (risk >= 0.8) return { fill: '#FFEDD5', stroke: '#ea580c', text: '#9a3412' }
-  if (risk >= 0.5) return { fill: '#DBEAFE', stroke: '#2563EB', text: '#1d4ed8' }
-  if (risk > 0.2) return { fill: '#EFF6FF', stroke: '#93c5fd', text: '#3b82f6' }
-  return { fill: '#ECFCCB', stroke: '#65a30d', text: '#4d7c0f' }
+function riskStyle(risk) {
+  if (risk >= 0.72) return { fill: '#F0D3D1', stroke: '#B42318', text: '#B42318' }
+  if (risk >= 0.5) return { fill: '#CFE4E2', stroke: '#0F766E', text: '#115E59' }
+  if (risk > 0.2) return { fill: '#FFFFFF', stroke: '#A8A29E', text: '#57534E' }
+  return { fill: '#FFFFFF', stroke: '#E2DED4', text: '#A8A29E' }
 }
 
 export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
@@ -28,12 +28,12 @@ export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
   const edgeSet = new Set(edges.map((e) => e.to))
 
   return (
-    <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-3 h-80">
+    <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-3 h-80">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs tracking-widest text-ink-soft uppercase">
+        <span className="qf-section-title">
           Segment Topology — Live Risk
         </span>
-        <span className="text-[10px] text-ink-faint">
+        <span className="text-[10px] font-light text-[#57534E]">
           campaign P {((topology?.campaignRisk ?? 0) * 100).toFixed(0)}%
         </span>
       </div>
@@ -43,7 +43,7 @@ export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
           const [a, b] = l.split('-')
           if (!POS[a] || !POS[b]) return null
           return <line key={l} x1={POS[a].x} y1={POS[a].y} x2={POS[b].x} y2={POS[b].y}
-            stroke="#D8CFB6" strokeWidth={0.4} />
+            stroke="#E2DED4" strokeWidth={0.4} />
         })}
 
         {/* attack edges (animated) */}
@@ -52,7 +52,7 @@ export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
           return (
             <line key={i} x1={POS.ATTACKER.x} y1={POS.ATTACKER.y}
               x2={POS[e.to].x} y2={POS[e.to].y}
-              stroke="#ea580c" strokeWidth={0.7}
+              stroke="#B42318" strokeWidth={0.7}
               strokeDasharray="2 1.5">
               <animate attributeName="stroke-dashoffset" from="7" to="0" dur="0.8s" repeatCount="indefinite" />
             </line>
@@ -63,12 +63,12 @@ export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
         {topology?.attackerIp && (
           <g>
             <circle cx={POS.ATTACKER.x} cy={POS.ATTACKER.y} r={4.4}
-              fill="#FFEDD5" stroke="#ea580c" strokeWidth={0.8}
+              fill="#F0D3D1" stroke="#B42318" strokeWidth={0.8}
               className={edges.length ? 'animate-pulse' : ''} />
             <text x={POS.ATTACKER.x} y={POS.ATTACKER.y + 0.9} textAnchor="middle"
-              fill="#9a3412" fontSize={2.6} fontWeight="bold">!</text>
+              fill="#B42318" fontSize={2.6} fontWeight="400">!</text>
             <text x={POS.ATTACKER.x} y={POS.ATTACKER.y + 7.4} textAnchor="middle"
-              fill="#c2410c" fontSize={2.4} fontFamily="monospace">
+              fill="#57534E" fontSize={2.4} fontFamily="sans-serif">
               {topology.attackerIp}
             </text>
           </g>
@@ -78,22 +78,22 @@ export default function TopologyMap({ topology, onSelectHost, selectedHost }) {
         {hosts.map((h) => {
           const p = POS[h.name]
           if (!p) return null
-          const c = riskColor(h.risk)
+          const c = riskStyle(h.risk)
           const attacked = edgeSet.has(h.name)
           const isolated = h.incident === 'contained' || h.incident === 'verified'
           return (
             <g key={h.name} onClick={() => onSelectHost?.(h.name)}
               style={onSelectHost ? { cursor: 'pointer' } : undefined}>
-              <rect x={p.x - 9} y={p.y - 4} width={18} height={8} rx={1.6}
-                fill={c.fill} stroke={selectedHost === h.name ? '#2563EB' : c.stroke} strokeWidth={attacked ? 0.9 : selectedHost === h.name ? 1.1 : 0.5} />
-              {isolated && <rect x={p.x - 10} y={p.y - 5} width={20} height={10} rx={2}
-                fill="none" stroke="#65a30d" strokeWidth={0.5} strokeDasharray="1.5 1" />}
+              <rect x={p.x - 9} y={p.y - 4} width={18} height={8} rx={0.8}
+                fill={c.fill} stroke={selectedHost === h.name ? '#0F766E' : c.stroke} strokeWidth={attacked ? 0.9 : selectedHost === h.name ? 1.1 : 0.5} />
+              {isolated && <rect x={p.x - 10} y={p.y - 5} width={20} height={10} rx={0.8}
+                fill="none" stroke="#067647" strokeWidth={0.5} strokeDasharray="1.5 1" />}
               <text x={p.x} y={p.y - 0.4} textAnchor="middle" fill={c.text}
-                fontSize={3} fontWeight="700">{h.name}</text>
-              <text x={p.x} y={p.y + 2.6} textAnchor="middle" fill="#8A8272"
-                fontSize={1.9} fontFamily="monospace">{ROLE_LABEL[h.role] || h.role}</text>
+                fontSize={3} fontWeight="400">{h.name}</text>
+              <text x={p.x} y={p.y + 2.6} textAnchor="middle" fill="#57534E"
+                fontSize={1.9} fontFamily="sans-serif">{ROLE_LABEL[h.role] || h.role}</text>
               <text x={p.x} y={p.y + 4.9} textAnchor="middle" fill={c.stroke}
-                fontSize={2.1} fontFamily="monospace">
+                fontSize={2.1} fontFamily="sans-serif">
                 P={(h.risk * 100).toFixed(0)}%
                 {h.incident ? ` · ${h.incident}` : ''}
               </text>

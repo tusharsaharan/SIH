@@ -2,28 +2,28 @@
 export default function CampaignPanel({ campaigns }) {
   const list = campaigns || []
   return (
-    <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-4 h-56 flex flex-col">
-      <div className="text-xs tracking-widest text-ink-soft uppercase mb-2">
+    <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-4 h-56 flex flex-col">
+      <div className="qf-section-title mb-2">
         Campaign Attribution
       </div>
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {!list.length ? (
-          <div className="grid place-items-center h-full text-ink-faint text-xs">
+          <div className="grid place-items-center h-full text-[#57534E] text-xs font-light">
             no correlated campaigns yet
           </div>
         ) : list.map((c) => (
-          <div key={c.campaign} className="rounded-lg border border-line bg-ivory px-3 py-2 shadow-soft">
+          <div key={c.campaign} className="rounded-sm border border-[#E2DED4] bg-[#F4F3EF] px-3 py-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-blue-700 font-mono">
+              <span className="text-[11px] font-light text-[#1C1917]">
                 {c.campaign}
               </span>
-              <span className={`text-[9px] uppercase px-1.5 py-0.5 rounded
-                ${c.verdict === 'known-bad' ? 'bg-orange-100 text-orange-700'
-                  : 'bg-blue-100 text-blue-700'}`}>
+              <span className={`text-[9px] uppercase px-1.5 py-0.5 rounded-sm border
+                ${c.verdict === 'known-bad' ? 'text-[#B42318] border-[#B42318]'
+                  : 'text-[#57534E] border-[#E2DED4]'}`}>
                 {c.verdict || 'unknown'}
               </span>
             </div>
-            <div className="text-[10px] text-ink-soft mt-1">
+            <div className="text-[10px] font-light text-[#57534E] mt-1">
               {c.nAlerts} alerts · max P={(c.maxProb * 100).toFixed(0)}% · hosts {c.hosts?.join(', ') || '—'}
               {c.geo ? ` · ${c.geo}` : ''}
             </div>

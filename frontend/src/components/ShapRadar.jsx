@@ -25,15 +25,15 @@ export default function ShapRadar({ history }) {
     .slice(0, 6)
 
   return (
-    <div className="rounded-2xl border border-line bg-ivory-soft shadow-soft p-4 h-64">
-      <div className="text-xs tracking-widest text-ink-soft uppercase mb-1">
+    <div className="rounded-md border border-[#E2DED4] bg-[#FFFFFF] p-4 h-64">
+      <div className="qf-section-title mb-1">
         SHAP Attribution Radar — Recent Windows
       </div>
       <ResponsiveContainer width="100%" height="82%">
         <RadarChart data={data} outerRadius="72%">
-          <PolarGrid stroke="#E7DFC8" />
-          <PolarAngleAxis dataKey="feature" tick={{ fill: '#8A8272', fontSize: 9 }} />
-          <Radar dataKey="importance" stroke="#2563EB" fill="#2563EB"
+          <PolarGrid stroke="#E2DED4" />
+          <PolarAngleAxis dataKey="feature" tick={{ fill: '#57534E', fontSize: 9 }} />
+          <Radar dataKey="importance" stroke="#0F766E" fill="#0F766E"
             fillOpacity={0.25} isAnimationActive={false} />
         </RadarChart>
       </ResponsiveContainer>

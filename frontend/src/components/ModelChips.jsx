@@ -11,27 +11,27 @@ export default function ModelChips() {
 
   return (
     <Card>
-      <SectionTitle right={<Badge tone="lime">eval harness</Badge>}>Model Leaderboard</SectionTitle>
+      <SectionTitle right={<Badge tone="secondary">eval harness</Badge>}>Model Leaderboard</SectionTitle>
       {!models ? (
-        <div className="text-[11px] text-ink-faint">loading checkpoints…</div>
+        <div className="text-[11px] font-light text-[#57534E]">loading checkpoints…</div>
       ) : models.length === 0 ? (
         <EmptyState glyph="◈">no checkpoints found</EmptyState>
       ) : (
         <div className="flex flex-col gap-1.5">
           {models.map((m) => (
-            <div key={m.name} className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 ${m.name === 'current' ? 'border-blue-300 bg-blue-50' : 'border-line bg-ivory'}`}>
-              <span className="text-[11px] font-semibold text-ink">
+            <div key={m.name} className={`flex items-center justify-between rounded-sm border px-2.5 py-1.5 ${m.name === 'current' ? 'border-[#0F766E] bg-[#CFE4E2]' : 'border-[#E2DED4] bg-[#FFFFFF]'}`}>
+              <span className="text-[11px] font-light text-[#1C1917]">
                 {m.label || m.name}
-                {m.name === 'current' && <Badge tone="blue" className="ml-2">live</Badge>}
+                {m.name === 'current' && <Badge tone="primary" className="ml-2">live</Badge>}
               </span>
-              <span className="text-[11px] tabular-nums text-ink-soft">
+              <span className="text-[11px] font-light tabular-nums text-[#57534E]">
                 {m.val_auc != null ? `AUC ${Number(m.val_auc).toFixed(3)}` : '—'}
               </span>
             </div>
           ))}
         </div>
       )}
-      <div className="mt-2 text-[10px] text-ink-faint">compare any two live in the A/B replay panel</div>
+      <div className="mt-2 text-[10px] font-light text-[#57534E]">compare any two live in the A/B replay panel</div>
     </Card>
   )
 }

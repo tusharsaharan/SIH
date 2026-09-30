@@ -1,68 +1,64 @@
 export default function Header({ connected, running, paused, latest, onLaunch,
   onStop, onTogglePause, kind, setKind, kinds = [], sessionId }) {
   return (
-    <header className="flex items-center justify-between border-b border-line bg-ivory/85 px-6 py-3 backdrop-blur sticky top-0 z-10 shadow-soft">
-      <div className="flex items-center gap-3">
-        <div className="grid place-items-center w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-orange-500 font-black text-ivory shadow-soft">
+    <header className="flex items-center justify-between border-b border-[#E2DED4] bg-[#FFFFFF] px-6 sticky top-0 z-10" style={{ height: 88 }}>
+      <div className="flex items-center gap-4">
+        <div className="grid place-items-center w-11 h-11 rounded-sm bg-[#0F766E] text-white text-xl">
           Æ
         </div>
         <div>
-          <div className="text-sm font-bold tracking-wider text-ink">AEGISFORECAST</div>
-          <div className="text-[10px] text-ink-soft">AI Network Attack Forecasting · SOC Command Center</div>
+          <div className="qf-label-lg tracking-wider text-[#1C1917]">AEGISFORECAST</div>
+          <div className="qf-body-sm text-[#57534E]">AI Network Attack Forecasting · SOC Command Center</div>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
         {kinds.length > 0 && (
-          <div className="hidden md:flex rounded-xl border border-line bg-ivory-soft overflow-hidden shadow-soft">
+          <div className="hidden md:flex rounded-sm border border-[#E2DED4] overflow-hidden">
             {kinds.map((k) => (
               <button key={k.id} onClick={() => setKind(k.id)} disabled={running}
                 title={k.hint}
-                className={`px-3 py-1.5 text-[10px] font-semibold tracking-wide
-                  ${kind === k.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-ink-soft hover:bg-ivory-deep'}
-                  ${running ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                className={`qf-nav px-4 ${kind === k.id
+                    ? 'bg-[#0F766E] text-white'
+                    : 'text-[#57534E] hover:text-[#1C1917]'}
+                  ${running ? 'opacity-50 cursor-not-allowed' : ''}`}
+                style={{ height: 44 }}>
                 {k.label}
               </button>
             ))}
           </div>
         )}
 
-        <div className="hidden lg:flex items-center gap-4 text-[11px]">
+        <div className="hidden lg:flex items-center gap-4 qf-body-sm text-[#57534E]">
           <Status label="WS" ok={connected} />
           <Status label={paused ? 'PAUSED' : 'SIM'} ok={running && !paused} />
           {latest && (
-            <span className="text-ink-faint">
-              t+<span className="text-ink tabular-nums">{latest.simMinute.toFixed(1)}</span>m
+            <span>
+              t+<span className="text-[#1C1917] tabular-nums">{latest.simMinute.toFixed(1)}</span>m
               {latest.host ? ` · ${latest.host}` : ''}
             </span>
           )}
           {latest?.horizon > 0 && (
-            <span className="text-orange-600">ETA detonation {latest.horizon}m</span>
+            <span className="text-[#B42318]">ETA detonation {latest.horizon}m</span>
           )}
         </div>
 
         {running ? (
-          <button onClick={onLaunch} disabled
-            className="rounded-lg border border-lime-600 bg-lime-50 px-4 py-1.5 text-xs font-semibold text-lime-700 opacity-60 cursor-not-allowed">
+          <span className="qf-chip tabular-nums">
             ▶ {sessionId || 'live'}
-          </button>
+          </span>
         ) : null}
         {running ? (
           <>
-            <button onClick={onTogglePause}
-              className="rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100">
+            <button onClick={onTogglePause} className="qf-btn qf-btn-secondary">
               {paused ? '▶ Resume' : '⏸ Pause'}
             </button>
-            <button onClick={onStop}
-              className="rounded-lg border border-orange-300 bg-orange-50 px-4 py-1.5 text-xs font-semibold text-orange-700 hover:bg-orange-100">
+            <button onClick={onStop} className="qf-btn qf-btn-error">
               ■ Abort Session
             </button>
           </>
         ) : (
-          <button onClick={onLaunch}
-            className="rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-semibold text-white shadow-soft hover:bg-blue-500">
+          <button onClick={onLaunch} className="qf-btn qf-btn-primary">
             ▶ Launch Attack Simulation
           </button>
         )}
@@ -74,8 +70,8 @@ export default function Header({ connected, running, paused, latest, onLaunch,
 function Status({ label, ok }) {
   return (
     <span className="flex items-center gap-1.5">
-      <span className={`w-1.5 h-1.5 rounded-full ${ok ? 'bg-lime-500 animate-pulse' : 'bg-line'}`} />
-      <span className={ok ? 'text-lime-700' : 'text-ink-faint'}>{label}</span>
+      <span className={`w-1.5 h-1.5 rounded-full ${ok ? 'bg-[#0F766E] animate-pulse' : 'bg-[#E2DED4]'}`} />
+      <span className={ok ? 'text-[#1C1917]' : 'text-[#57534E]'}>{label}</span>
     </span>
   )
 }
