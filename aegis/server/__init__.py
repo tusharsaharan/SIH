@@ -675,3 +675,29 @@ def report_html(sid: str):
     sid, _ = _clean_sid(sid)
     r = _get_report_or_503(sid)
     return r["html"]
+
+
+# ------------------------------------------------- frontend dist (single-service deploy)
+# Serves frontend/dist so one URL handles dashboard + /api + /ws.
+# Mounted LAST so /api/* routes above always win.
+try:
+    from fastapi.responses import FileResponse as _FileResponse
+    from fastapi.staticfiles import StaticFiles as _StaticFiles
+
+    _DIST = REPO_ROOT / "frontend" / "dist"
+    if _DIST.is_dir():
+        _ASSETS = _DIST / "assets"
+        if _ASSETS.is_dir():
+            app.mount("/assets", _StaticFiles(directory=_ASSETS), name="assets")
+
+        @app.get("/{full_path:path}")
+        def _spa(full_path: str):
+            if full_path.startswith(("api", "ws", "docs", "openapi.json", "redoc")):
+                raise HTTPException(status_code=404)
+            if full_path:
+                _f = _DIST / full_path
+                if _f.is_file():
+                    return _FileResponse(_f)
+            return _FileResponse(_DIST / "index.html")
+except Exception:
+    pass  # dev mode without dist/ still works via vite proxy
